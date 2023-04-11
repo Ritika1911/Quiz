@@ -94,6 +94,9 @@ const Questions = ({route}) => {
         setOpt(['']);
         qno.current=qno.current+1;
         setid(qno.current);
+        setQ('');
+        setPoints(1);
+        setCopt('');
       }
     }
       const updateopt= (e)=> {
@@ -132,14 +135,17 @@ const Questions = ({route}) => {
           const Item = styled(Paper)(({ theme }) => ({
             backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
             ...theme.typography.body2,
-            padding: theme.spacing(1),
+            padding: 3,
             textAlign: 'center',
+            height:30,
+            marginTop:4,
             color: theme.palette.text.secondary,
           }));
+      
           
   return (
     <div>   
-      {open3? (<> <Alert severity="error" onClose={()=> {setOpen3(false)}}>You haven't selected a correct option</Alert></>):null}
+      {open3? (<> <Alert severity="error" onClose={()=> {setOpen3(false)}}>Please select a correct option</Alert></>):null}
        
      
     
@@ -240,10 +246,11 @@ const Questions = ({route}) => {
       <>
     <div>
     
-    <TextField id="outlined-basic" label="Enter a question " sx={{width: 600}} variant="outlined" onChange={e => setQ(e.target.value)}/> 
-    <Button variant="contained" sx={{color:'black', background:purple[50],marginTop:2, '&:hover': {
+    <TextField id="outlined-basic" label="Enter a question "  value={q} sx={{width: 600}} variant="outlined" onChange={e => setQ(e.target.value)}/> 
+    <Button variant="contained" sx={{color:'black', background:purple[50],marginTop:2,marginBottom: 5, '&:hover': {
       backgroundColor: '#ce93d8',
       color: 'white',
+      
   },}} onClick={e => setoptLogic(!optlogic)}>Add Options</Button>
     <RadioGroup
         aria-labelledby="demo-controlled-radio-buttons-group"
@@ -260,29 +267,16 @@ const Questions = ({route}) => {
     {optlogic?(
     <>
     <Stack direction="row" spacing="2" sx={{}}>
-      
-    <TextField id="outlined-basic" label="Option.. " sx={{width: 300, marginTop:2}} variant="outlined" onChange={e=> setCopt(e.target.value)}/> 
+
+    <TextField id="outlined-basic" label="Option.. " sx={{width: 300, display:'inline-block'}} variant="outlined" value={copt}  onChange={e=> setCopt(e.target.value)}/> 
     {/* <TextField id="filled-basic"  sx={{width: 300, background:'white', color:'purple'}}label="Option.." variant="filled" onChange={e=> setCopt(e.target.value)}/> */}
-   <Item> 
-   <PopupState variant="popper" popupId="demo-popup-popper">
-      {(popupState) => (
-        <div>
-          <TaskAltIcon onClick={e=> {updateopt(copt)}}  />
-          {/* <Button variant="contained" {...bindToggle(popupState)}>
-            Toggle Popper
-          </Button> */}
-          <Popper {...bindPopper(popupState)} transition>
-            {({ TransitionProps }) => (
-              <Fade {...TransitionProps} timeout={350}>
-                <Paper>
-                  <Typography sx={{ p: 2 }}>Option Added</Typography>
-                </Paper>
-              </Fade>
-            )}
-          </Popper>
-        </div>
-      )}
-    </PopupState></Item> 
+  
+          <Button sx={{padding:2, backgroundColor:'white','&:hover': {
+      backgroundColor: '#ce93d8',
+      color: 'white',
+      
+  } }} onClick={e=> {updateopt(copt)}}  >Add</Button>
+   
 
       </Stack>
     </>):null}

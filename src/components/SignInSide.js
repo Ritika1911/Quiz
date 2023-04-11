@@ -100,14 +100,14 @@ export default function SignInSide() {
       <CardActionArea>
         <CardMedia
           component="img"
-          height="240"
+          height="200"
           image={vote}
           alt="green iguana"
         />
         <CardContent>
          
           <Typography variant="p" color="text.secondary" sx={{ fontSize: '1.375rem',
-          fontWeight: '300',justifyContent:'center'}}>
+          fontWeight: '250',justifyContent:'center'}}>
           Looking to test your knowledge? Check out our app, with a variety of categories and challenging questions!
           </Typography>
         </CardContent>

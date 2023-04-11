@@ -7,6 +7,8 @@ import Countdown from 'react-countdown';
 import {useCollectionData} from "react-firebase-hooks/firestore"
 import { doc, getDoc,onSnapshot, collection, query, where } from "firebase/firestore";
 import Card from '@mui/material/Card';
+import { initializeApp } from "firebase/app";
+import {getAuth, signOut} from "firebase/auth";
 import CardActions from '@mui/material/CardActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
@@ -46,8 +48,20 @@ const Quiz = () => {
     var [cqdetails,loading2,error2]=useCollectionData(query3);
     var cq=cqdetails?.find(t=>t.name ===name);
     var total;
+    const firebaseConfig = {
+      apiKey: "AIzaSyA92AdCJD5EvM-2eEen2ohD8vziYW1U6MY",
+      authDomain: "quiz-a1660.firebaseapp.com",
+      projectId: "quiz-a1660",
+      storageBucket: "quiz-a1660.appspot.com",
+      messagingSenderId: "872450901403",
+      appId: "1:872450901403:web:6042e2a56b58acb726cd3e",
+      measurementId: "G-1DC7MVMTNG",
+      
+    };
+    const app = initializeApp(firebaseConfig);
+  const auth=getAuth(app);
     if(cq)
-        total=cq?.total;
+        total=qs?.length;
     console.log("total ",total);
     const [minutes, setMinutes] = useState(false);
     const [seconds, setSeconds] = useState(false);
@@ -56,6 +70,7 @@ const Quiz = () => {
     const [marks,setMarks]=useState(0);
     const qno =useRef(0);
     const score =useRef(0);
+    const currscore =useRef(0);
     const [quesno,setQues] =useState(0);
     const [options,setoptions]=useState();
     const [timeup,setTimeup]=useState(false);
@@ -67,7 +82,7 @@ const Quiz = () => {
     const [alert,setAlert]=useState(false);
     const [alertradio,setAlertr]=useState(false);
     const [open3,setOpen3]=useState(false);
-    
+    const [corr,setcorr]=useState(0);
     while(qs?.find(t=>t.id ===qno.current)?.del==true  && quesno<=total-1)
     {
       qno.current= qno.current+1;
@@ -110,18 +125,23 @@ const Quiz = () => {
         return <Box sx={{display:'inline-block',marginLeft:73}}> <Stack direction="row" spacing="2" sx={{backgroundColor:purple[100], m:3, p: 3,width:'fit-content', borderRadius:3, boxShadow:5}}> <Box sx={{backgroundColor:purple[50], p:2, borderRadius:2, fontSize:30}}>{hours}</Box><Box sx={{fontWeight:1.5, fontSize:30, p: 1}}>:</Box><Box sx={{backgroundColor:purple[50], p:2,m:3, borderRadius:2,fontSize:30}}>{minutes}</Box><Box sx={{fontWeight:1.5, fontSize:30, p:1}}>:</Box><Box sx={{backgroundColor:purple[50], p:2, m : 3,borderRadius:2, fontSize:30}}>{seconds}</Box></Stack></Box>;
     }
     };
-    const handlenext = ()=>{
+    const handlenext = (id)=>{
       if(chosen=='')
         setOpen3(true)
       else{
-        const radioButtons = document.querySelectorAll('radio');
-        let chosen=false;
-        for (const radioButton of radioButtons) {
-            if (radioButton.checked) {
-              console.log("r ",radioButton.checked)
-              chosen=true;
-            }
+        setOpen3(false);
+        setorder([...order,id]);
+        setAns([...ans,chosen]);
+        console.log("ans after ",ans);
+        if(chosen==cur.correct)
+        {
+            currscore.current=currscore.current+1;
+            score.current=parseInt(score.current)+parseInt(cur?.points);
+            setMarks(score.current);
+            setcorr(currscore.current);
         }
+
+
         qno.current= qno.current+1;
         setQues(qno.current);
         console.log("q ",qno.current);
@@ -173,18 +193,26 @@ const Quiz = () => {
     
 
     const handleChange = (event, id) => {
-      setOpen3(false);
-        setChosen(event.target.value);
-        setorder([...order,id]);
-        setAns([...ans,event.target.value]);
-        console.log("ans after ",ans);
-        if(event.target.value==cur.correct)
-        {
-            score.current=parseInt(score.current)+parseInt(cur?.points);
-            setMarks(score.current);
-        }
-        console.log("order ",order);
+      setChosen(event.target.value);
+      // setOpen3(false);
+      // if(order[order.length-1]==id)
+      // {
+      //   setChosen(event.target.value);
+      //   ans[ans.length-1]=event.target.value;
         
+      // }
+      //   setChosen(event.target.value);
+      //   setorder([...order,id]);
+      //   setAns([...ans,event.target.value]);
+      //   console.log("ans after ",ans);
+      //   if(event.target.value==cur.correct)
+      //   {
+      //       currscore.current=currscore.current+1;
+      //       score.current=parseInt(score.current)+parseInt(cur?.points);
+      //       setMarks(score.current);
+      //       setcorr(currscore.current);
+      //   }
+      //   console.log("order ",corr);
       };
 const bull = (
     <Box
@@ -219,7 +247,7 @@ const bull = (
       </CardActions>
       <Button id="btn" sx={{backgroundColor:'white', boxShadow:2 ,marginLeft:25, marginTop:3, '&:hover': {
           backgroundColor: '#eeeeee',
-      }}} onClick={e=>handlenext()}> Next <ArrowForwardIosSharpIcon/></Button>
+      }}} onClick={e=>handlenext(cur?.id)}> Next <ArrowForwardIosSharpIcon/></Button>
     </React.Fragment>
   );
   const style = {
@@ -258,8 +286,8 @@ const bull = (
             <p id="child-modal-description">
              
             </p>
-            <Button onClick={e => { navigate('/report',{ state: { name:name, ans: ans, nat:nat, marks:marks, total:total, order:order} })}}>View Results</Button>
-            <Button onClick={handleClose3}>Close</Button>
+            <Button onClick={e => { navigate('/report',{ state: { name:name, ans: ans, nat:nat, marks:marks, total:total, order:order, corr: corr} })}}>View Results</Button>
+           
           </Box>
         </Modal>
       </React.Fragment>
@@ -286,6 +314,11 @@ const bull = (
   const handleClose2 = () => {
     setOpen2(false);
   };
+  const signOutfun= ()=> {
+    signOut(auth);
+    console.log("signed out");
+    navigate('/');
+  }
 
   return (
     <div>
@@ -306,7 +339,7 @@ const bull = (
             <MenuIcon onClick={()=> {navigate('/display')}} />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={()=> {navigate('/display')}}>
-            Return to the Menu
+            Pick another Quiz
           </Typography>
           <IconButton
                 size="large"
@@ -315,9 +348,9 @@ const bull = (
                 aria-haspopup="true"
                 color="inherit"
               >
-                <AccountCircle />
+                
               </IconButton>
-          <Button color="inherit" >Logout</Button>
+          <Button color="inherit" onClick={()=>{navigate('/home', { state: { name:'' } })}}>Return to the Dashboard</Button>
         </Toolbar>
       </AppBar>
     </Box>
@@ -404,7 +437,7 @@ const bull = (
            Your time is up!
           </Typography>
           <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
-          <Button onClick={e => { navigate('/report',{ state: { name:name, ans: ans, nat:nat, marks:marks, total:total} })}}> Click here to view your report!</Button> 
+          <Button onClick={e => { navigate('/report',{ state: { name:name, ans: ans, nat:nat, marks:marks, total:total, order:order, corr:corr} })}}> Click here to view your report!</Button> 
           </Typography>
         </Box>
       </Modal></>) :null}
@@ -424,7 +457,7 @@ const bull = (
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose2}>Disagree</Button>
+         
           <Button autoFocus>
            <ChildModal/>
           </Button>

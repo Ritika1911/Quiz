@@ -2,6 +2,11 @@ import React, { useState } from 'react'
 import {useLocation} from 'react-router-dom';
 import { doc, getDoc,onSnapshot, collection, query, where } from "firebase/firestore";
 import db from "../config/firebase";
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import { useNavigate } from 'react-router';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
 import {useCollectionData} from "react-firebase-hooks/firestore";
 import Box from '@mui/material/Box';
 import { PieChart } from "react-minimal-pie-chart";
@@ -17,6 +22,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import { purple } from '@mui/material/colors';
 import FormControlLabel from '@mui/material/FormControlLabel';
 const Report = () => {
+  const navigate = useNavigate();
     const {state} = useLocation();
     const {name}=state;
     const {ans}=state;
@@ -24,6 +30,7 @@ const Report = () => {
     const {marks}=state;
     const {total}=state;
     const {order}=state;
+    const {corr}=state;
     const query2= collection(db,`quiz/${name}/questions`);
     var [qs,loading2,error2]=useCollectionData(query2);
     console.log("ans ",ans);
@@ -51,10 +58,38 @@ const Report = () => {
       // return <span>val</span>
     }
     
-    let data=[{ title: "Correct", value: (marks/total)*100, color: "#FFC074" },
-    { title: "Wrong", value: ((total-nat-marks)/total)*100, color: "#A2D2FF" },];
+    let data=[{ title: "Correct", value: (corr/order.length)*100, color: "#FFC074" },
+    { title: "Wrong", value: ((order.length-corr)/order.length)*100, color: "#A2D2FF" },];
   return (
     <div>
+      <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon onClick={()=>{navigate('/home', { state: { name:'' } })}} />
+          </IconButton>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={()=>{navigate('/home', { state: { name:'' } })}}>
+            Return to the menu
+          </Typography>
+          <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                color="inherit"
+              >
+              
+              </IconButton>
+          <Button color="inherit" onClick={()=> {navigate('/display')}}>Take another Quiz</Button>
+        </Toolbar>
+      </AppBar>
+    </Box>
         <Box
         component="span"
         sx={{
@@ -73,7 +108,7 @@ const Report = () => {
       >
       Here's your report for the Quiz {name}
       </Box>
-      <Box>
+      <Box sx={{display:'flex',justifyContent:'center'}}>
         {loading2 &&  <CircularProgress sx={{width:'fit-content',height:50,marginLeft:100,marginTop: 30}}/>}
       <Stack direction="row" sx={{scroll:true}}>
       {order?.map((doc,index)=>(<Card sx={{ width: 200,height: 'fit-content',m: 2, backgroundColor:purple[50], border:purple[200], boxShadow:4 }}  key={doc.id + 1}>
@@ -120,7 +155,7 @@ const Report = () => {
 
         </Stack>
       </Box>
-      <Box>
+      <Box sx={{justifyContent:'center', display:'flex'}}>
       <Stack direction="row" sx={{scroll:true}}>
           <Card>
             <CardContent>
@@ -132,8 +167,8 @@ const Report = () => {
           marginLeft:'10',
          
           borderRadius: 2,
-          fontSize: '1.575rem',
-          fontWeight: '700',
+          fontSize: '1.275rem',
+          fontWeight: '500',
           backgroundColor:'#e1bee7' ,
           // '6a1b9a',
       p:1,
@@ -150,15 +185,15 @@ const Report = () => {
           marginLeft:'10',
          
           borderRadius: 2,
-          fontSize: '1.575rem',
-          fontWeight: '700',
+          fontSize: '1.275rem',
+          fontWeight: '500',
           backgroundColor:'#e1bee7' ,
           // '6a1b9a',
       p:1,
       m:1,
         }}
       >
-      Percentage : { (marks/total)*100} %
+      Percentage : { (corr/total)*100} %
 
       {/* Wrong :  {wrong} */}
       </Box>
@@ -168,18 +203,18 @@ const Report = () => {
   
    center={[25, 25]}
    data={data}
-   labelPosition={50}
+   labelPosition={20}
    lengthAngle={360}
-   lineWidth={35}
+   lineWidth={40}
    paddingAngle={0}
    radius={20}
    rounded
    startAngle={0}
-   viewBoxSize={[200, 200]
+   viewBoxSize={[50, 50]
   }labelStyle={{
-    fontSize: "6px",
+    fontSize: "3px",
     fontColor: "FFFFFA",
-    fontWeight: "100",
+    fontWeight: "50",
     fontFamily: "monospace"
   }}
   label={(data) => data.dataEntry.title}

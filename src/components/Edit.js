@@ -135,6 +135,7 @@ const Edit = () => {
             const updateTimestamp =  updateDoc(docRef, {
                 total:questionsCollection?.length+1,
             });
+            setQ('');
           }
           }
          
@@ -184,10 +185,10 @@ const Edit = () => {
             aria-label="menu"
             sx={{ mr: 2 }}
           >
-            <MenuIcon onClick={()=> {navigate('/home', { state: { name:name } })}} />
+            <MenuIcon onClick={()=> {navigate('/editdisplay', { state: { name:name } })}} />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            The Quiz App
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={()=> {navigate('/editdisplay', { state: { name:name } })}}>
+            Pick another quiz
           </Typography>
           <IconButton
                 size="large"
@@ -196,9 +197,8 @@ const Edit = () => {
                 aria-haspopup="true"
                 color="inherit"
               >
-                <AccountCircle />
               </IconButton>
-          <Button color="inherit" >Logout</Button>
+          <Button color="inherit" onClick={()=>{navigate('/home', { state: { name:'' } })}}>Return to the menu</Button>
         </Toolbar>
       </AppBar>
     </Box>
@@ -210,7 +210,7 @@ const Edit = () => {
            {addq?(<>
             <div>
     
-    <TextField id="outlined-basic" label="Enter a question " sx={{width: 470}} variant="outlined" onChange={e => setQ(e.target.value)}/> 
+    <TextField id="outlined-basic" label="Enter a question "  value={q} sx={{width: 470}} variant="outlined" onChange={e => setQ(e.target.value)}/> 
     <Button variant="contained" sx={{color:'black', background:purple[50],marginTop:2, '&:hover': {
       backgroundColor: '#ce93d8',
       color: 'white',
@@ -232,7 +232,7 @@ const Edit = () => {
     <>
     <Stack direction="row" spacing="2" sx={{}}>
       
-    <TextField id="outlined-basic" label="Option.. " sx={{width: 200, display:"inline-block"}} variant="outlined" onChange={e=> setCopt(e.target.value)}/> 
+    <TextField id="outlined-basic" label="Option.. " sx={{width: 200, display:"inline-block"}} variant="outlined" value={copt} onChange={e=> setCopt(e.target.value)}/> 
     {/* <TextField id="filled-basic"  sx={{width: 300, background:'white', color:'purple'}}label="Option.." variant="filled" onChange={e=> setCopt(e.target.value)}/> */}
 
           <TaskAltIcon sx={{display:"inline-block", p:2}} onClick={e=> {updateopt(copt)}}  />

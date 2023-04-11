@@ -44,8 +44,8 @@ const auth=getAuth(app);
 const {state} = useLocation();
     const [name,setName] = useState('');
     const [desc,setDesc] = useState('');
-    const [points,setPoints] = useState(0);
-    const [time,setTime] = useState(0);
+    const [points,setPoints] = useState('');
+    const [time,setTime] = useState('');
     const [units,setUnits]=useState('Seconds');
     const [alert,setAlert]=useState(false);
     const [disabled,setDisabled]=useState(true);
@@ -60,7 +60,7 @@ const {state} = useLocation();
         //     points:points,
         //     time:time
         //   });
-        if(name=='' || desc=='' || points ==0 || time==0)
+        if(name=='' || desc=='' || (points =='Points' || points=='') || (time=='Time'|| time==''))
         {
           setAlert(true);
         }
@@ -76,6 +76,7 @@ const {state} = useLocation();
           });
         console.log("added");
         setDisabled(false);
+      
         }
     }
     useEffect(() => {
@@ -190,16 +191,16 @@ const {state} = useLocation();
     >
       <TextField sx={{
         display:'block',
-      }} id="outlined-basic" label="Name" variant="outlined" onChange={e=> setName(e.target.value)}/>
+      }} id="outlined-basic" label="Name" variant="outlined" value={name} onChange={e=> setName(e.target.value)}/>
       <TextField sx={{
         display:'block',
-      }} id="outlined-basic" label="Description" variant="outlined" onChange={e=> setDesc(e.target.value)}/>
+      }} id="outlined-basic" label="Description" variant="outlined" value={desc} onChange={e=> setDesc(e.target.value)}/>
       <TextField sx={{
         display:'block',
-      }} id="outlined-basic" label="Points" variant="outlined" onChange={e=> setPoints(e.target.value)}/>
+      }} id="outlined-basic" label="Points" variant="outlined" value={points} onChange={e=> setPoints(e.target.value)}/>
       <TextField sx={{
         display:'inline-block',
-      }} id="outlined-basic" label="Time limit" variant="outlined" onChange={e=> setTime(e.target.value)}/>
+      }} id="outlined-basic" label="Time limit" variant="outlined" value={time} onChange={e=> setTime(e.target.value)}/>
       <Select
         labelId="demo-simple-select-label"
         id="demo-simple-select"

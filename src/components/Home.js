@@ -19,6 +19,7 @@ import CardMedia from '@mui/material/CardMedia';
 import { CardActionArea } from '@mui/material';
 import icon from '../assets/icon.png';
 import test from '../assets/test.png';
+import edit from '../assets/edit.png';
 
 const Home = () => {
     const firebaseConfig = {
@@ -53,7 +54,7 @@ const Home = () => {
   return (
     <div>
       <Box>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1 , alignContent:'center'}}>
       <AppBar position="static">
         <Toolbar>
           <IconButton
@@ -63,7 +64,7 @@ const Home = () => {
             aria-label="menu"
             sx={{ mr: 2 }}
           >
-            <MenuIcon onClick={()=> {navigate('/')}} />
+            <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             The Quiz App
@@ -88,13 +89,14 @@ const Home = () => {
           </Typography>
           </Box>
           <Box sx={{
-            marginLeft:5
+            
           }}>
 <Card sx={{maxWidth: 345, maxHeight:345,display:'inline-block', margin:6 }} onClick={e => createfun()}>
       <CardActionArea>
         <CardMedia
           component="img"
-          height="240"
+          height="150"
+          width="150"
           image={icon}
           alt="green iguana"
         />
@@ -112,7 +114,8 @@ const Home = () => {
       <CardActionArea>
         <CardMedia
           component="img"
-          height="240"
+          height="150"
+          width="150"
           image={test}
           alt="green iguana"
         />
@@ -126,13 +129,13 @@ const Home = () => {
         </CardContent>
       </CardActionArea>
     </Card>
-    <Card sx={{ width: 345, height:345,display:'inline-block', margin:6 }} onClick={e => {navigate('/editdisplay')}}>
+    <Card sx={{ maxWidth: 345, maxHeight:345,display:'inline-block', margin:6 }} onClick={e => {navigate('/editdisplay')}}>
       <CardActionArea>
         <CardMedia
           component="img"
-          height="240"
-          image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkxr5KXDuQFzJ2kXUbxrAIkV2sC_1paZIeVg&usqp=CAU
-          "
+          height="150"
+          width="150"
+          image={edit}
           alt="green iguana"
         />
         <CardContent>
